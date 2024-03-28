@@ -1,0 +1,6 @@
+[submodule "Android"]
+	path = Android
+	url = https://github.com/shixunIV/Android.git
+[submodule "Web"]
+	path = Web
+	url = https://github.com/shixunIV/Web.git
