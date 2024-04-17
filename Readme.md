@@ -13,7 +13,7 @@ Web端开发请在Web子目录下
 # 系统需求
 需要安装python与npm/nodejs, 数据库采用sqlite,省去配置步骤,图数据库采用neo4j,用于构建数据库
 在config.yml中配置自己的neo4j数据库等本地信息
-后续考虑python+go双语言构建后端,go提供api,python提供图数据库服务
+
 
 # 目录结构
 前端实现在web目录下,不需要实现Android端,使用React进行开发,给我开发的好看一些@hkjgsfgh
