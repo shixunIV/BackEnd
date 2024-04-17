@@ -6,6 +6,14 @@ Web端开发请在Web子目录下
 >https://juejin.cn/post/6844903793033756680
 
 
-# 项目目标
+# 项目说明
 一个医疗知识图谱,可以基于知识图谱进行问答等内容.
-前端实现在web目录下,不需要实现Android子目录
+
+# 系统需求
+需要安装python与npm/nodejs, 数据库采用sqlite,省去配置步骤,图数据库采用neo4j,用于构建数据库
+在config.yml中配置自己的neo4j数据库等本地信息
+
+
+# 目录结构
+前端实现在web目录下,不需要实现Android端,使用React进行开发,给我开发的好看一些@hkjgsfgh
+
