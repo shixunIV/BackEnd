@@ -52,5 +52,10 @@
         "bad": [],
         "recommand": []
     },
-    "drug_info": []
+    "common_drug": [
+        "甲钴胺分散片"
+    ],
+    "drug_detail": [
+        "卓和甲钴胺分散片(甲钴胺分散片)"
+    ]
 }

@@ -8,8 +8,12 @@ import concurrent.futures
 
 class Spider:
     def __init__(self) -> None:
-        pass
-
+        self.data_path = "neo4jInit/data/medical.json"
+        self.dict = {}
+        for data in open(self.data_path, "r", encoding="utf-8"):
+            json_data = json.loads(data)
+            self.dict[json_data["name"]] = json_data
+            
     def get_html(self, url):
         headers = {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
@@ -73,7 +77,7 @@ class Spider:
     def symptom_spider(self, url):
         html = self.get_html(url)
         soup = BeautifulSoup(html, "html.parser")
-        symptom = [element.get_text() for element in soup.select("a.gre")]
+        symptom = [element.get_text() for element in soup.select("a.gre")][:-1]
         symptoms = []
         symptoms.append(symptom)
         ps = soup.select("p")
@@ -152,7 +156,6 @@ class Spider:
         inspect_url = "http://jib.xywy.com/il_sii/inspect/%s.htm" % page  # 疾病检查
         treat_url = "http://jib.xywy.com/il_sii/treat/%s.htm" % page  # 疾病治疗
         food_url = "http://jib.xywy.com/il_sii/food/%s.htm" % page  # 饮食治疗
-        drug_url = "http://jib.xywy.com/il_sii/drug/%s.htm" % page  # 药物
         data = {}
         data["url"] = basic_url
         data["basic_info"] = self.basicinfo_spider(basic_url)
@@ -162,7 +165,10 @@ class Spider:
         data["inspect_info"] = self.inspect_spider(inspect_url)
         data["treat_info"] = self.treat_spider(treat_url)
         data["food_info"] = self.food_spider(food_url)
-        data["drug_info"] = self.drug_spider(drug_url)
+        name = data["basic_info"]["name"]
+        json_data = self.dict[name]
+        data["common_drug"] = json_data["common_drug"]
+        data["drug_detail"] = json_data["drug_detail"]
         print(page, basic_url)
         # 保存为json
         with open("neo4jInit/data/%s.json" % page, "w", encoding="utf-8") as f:
