@@ -29,3 +29,7 @@ class MedicalGraph:
             password=str(config["neo4j"]["password"]),
         )
 
+    def read_data(self):
+        with open(self.data_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return data
