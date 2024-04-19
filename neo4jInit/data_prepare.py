@@ -2,7 +2,7 @@ import os
 import json
 import jieba
 import concurrent.futures
-
+from py2neo import Graph, Node
 
 def process_file(i):
     path = "./neo4jInit/data/spider_data"
@@ -75,12 +75,7 @@ def get_entity():
     dict["细分药品"] = set()
 
 
-def create_diseases():
-    path = "./neo4jInit/data/new_data"
-    # 遍历这个文件夹
-    for file in os.listdir(path):
-        json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
-        # 节点的属性有 名称，描述，是否医保，患病比例，易感人群
+
 
 
 if __name__ == "__main__":

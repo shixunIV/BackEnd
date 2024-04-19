@@ -34,3 +34,298 @@ class MedicalGraph:
             data = json.load(f)
         return data
 
+    def create_diseases(self):
+        path = "./neo4jInit/data/new_data"
+        # 遍历这个文件夹
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            # 疾病节点的属性有 名称，描述，是否医保，患病比例，易感人群,治疗周期,治愈率,治疗费用,推荐,原因,预防,具体表现
+            self.g.create(
+                Node(
+                    "疾病",
+                    名称=json_data["名称"],
+                    描述=json_data["描述"][0],
+                    是否医保=json_data["是否医保"],
+                    患病比例=json_data["患病比例"],
+                    易感人群=json_data["易感人群"],
+                    治疗周期=json_data["治疗周期"],
+                    治愈率=json_data["治愈率"],
+                    治疗费用=json_data["治疗费用"],
+                    疾病小贴士=json_data["推荐"],
+                    原因=json_data["原因"],
+                    预防=json_data["预防"],
+                    具体表现=json_data["具体表现"][0],
+                )
+            )
+
+    def create_food(self):
+        path = "./neo4jInit/data/new_data"
+        set_food = set()
+        # 遍历这个文件夹
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            # 食物节点的属性有 饮食保健，忌吃食物，推荐食物,添加到set_food中
+            for tag in ["饮食保健", "忌吃食物", "推荐食物"]:
+                for food in json_data[tag]:
+                    set_food.add(food)
+
+        for food in set_food:
+            self.g.create(Node("食物", 名称=food))
+
+    def create_drug(self):
+        path = "./neo4jInit/data/new_data"
+        set_drug_常用 = set()
+        set_drug_detail = set()
+        # 遍历这个文件夹
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            # 药品节点的属性有 常用药品，药品明细
+            for drug in json_data["常用药品"]:
+                set_drug_常用.add(drug)
+
+            for drug in json_data["药品明细"]:
+                set_drug_detail.add(drug)
+
+        for drug in set_drug_常用:
+            self.g.create(Node("常用药品", 名称=drug))
+
+        for drug in set_drug_detail:
+            self.g.create(Node("药品明细", 名称=drug))
+
+    def create_分类(self):
+        path = "./neo4jInit/data/new_data"
+        set_分类 = set()
+        # 遍历这个文件夹
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 分类 in json_data["分类"]:
+                set_分类.add(分类)
+
+        for tag in set_分类:
+            self.g.create(Node("分类", 名称=tag))
+
+    def create_科室(self):
+        path = "./neo4jInit/data/new_data"
+        set_科室 = set()
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 就诊科室 in json_data["就诊科室"]:
+                set_科室.add(就诊科室)
+
+        for tag in set_科室:
+            self.g.create(Node("就诊科室", 名称=tag))
+
+    def create_治疗方式(self):
+        path = "./neo4jInit/data/new_data"
+        set_治疗方式 = set()
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 治疗方式 in json_data["治疗方式"]:
+                set_治疗方式.add(治疗方式)
+
+        for tag in set_治疗方式:
+            self.g.create(Node("治疗方式", 名称=tag))
+
+    def create_症状(self):
+        path = "./neo4jInit/data/new_data"
+        set_症状 = set()
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 症状 in json_data["症状"]:
+                set_症状.add(症状)
+
+        for tag in set_症状:
+            self.g.create(Node("症状", 名称=tag))
+
+    def create_检查(self):
+        path = "./neo4jInit/data/new_data"
+        set_检查 = set()
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 检查 in json_data["检查"]:
+                set_检查.add(检查)
+
+        for tag in set_检查:
+            self.g.create(Node("检查方式", 名称=tag))
+
+    def create_传染方式(self):
+        path = "./neo4jInit/data/new_data"
+        set_传染方式 = set()
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 传染方式 in json_data["传染方式"]:
+                set_传染方式.add(传染方式)
+
+        for tag in set_传染方式:
+            self.g.create(Node("传染方式", 名称=tag))
+
+    def create_entity(self):
+        create_methods = [
+            self.create_diseases,
+            self.create_food,
+            self.create_drug,
+            self.create_分类,
+            self.create_科室,
+            self.create_治疗方式,
+            self.create_症状,
+            self.create_检查,
+            self.create_传染方式,
+        ]
+        for method in create_methods:
+            method()
+
+    def create_疾病_to_分类(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 分类 in json_data["分类"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:分类) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:属于]->(b)",
+                    a=json_data["名称"],
+                    b=分类,
+                )
+
+    def create_疾病_to_科室(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 就诊科室 in json_data["就诊科室"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:就诊科室) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:就诊科室]->(b)",
+                    a=json_data["名称"],
+                    b=就诊科室,
+                )
+
+    def create_疾病_to_治疗方式(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 治疗方式 in json_data["治疗方式"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:治疗方式) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:治疗方式]->(b)",
+                    a=json_data["名称"],
+                    b=治疗方式,
+                )
+
+    def create_疾病_to_传染方式(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 传染方式 in json_data["传染方式"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:传染方式) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:传染方式]->(b)",
+                    a=json_data["名称"],
+                    b=传染方式,
+                )
+
+    def create_疾病_to_症状(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 症状 in json_data["症状"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:症状) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:症状]->(b)",
+                    a=json_data["名称"],
+                    b=症状,
+                )
+
+    def create_疾病_to_检查(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 检查 in json_data["检查"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:检查方式) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:检查]->(b)",
+                    a=json_data["名称"],
+                    b=检查,
+                )
+
+    def create_疾病_to_饮食保健(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 饮食保健 in json_data["饮食保健"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:食物) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:饮食保健]->(b)",
+                    a=json_data["名称"],
+                    b=饮食保健,
+                )
+
+    def create_疾病_to_忌吃食物(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 忌吃食物 in json_data["忌吃食物"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:食物) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:忌吃食物]->(b)",
+                    a=json_data["名称"],
+                    b=忌吃食物,
+                )
+
+    def create_疾病_to_推荐食物(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 推荐食物 in json_data["推荐食物"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:食物) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:推荐食物]->(b)",
+                    a=json_data["名称"],
+                    b=推荐食物,
+                )
+
+    def create_疾病_to_常用药品(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 常用药品 in json_data["常用药品"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:常用药品) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:常用药品]->(b)",
+                    a=json_data["名称"],
+                    b=常用药品,
+                )
+
+    def create_疾病_to_药品明细(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 药品明细 in json_data["药品明细"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:药品明细) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:药品明细]->(b)",
+                    a=json_data["名称"],
+                    b=药品明细,
+                )
+
+    def create_疾病_to_并发症(self):
+        path = "./neo4jInit/data/new_data"
+        for file in os.listdir(path):
+            json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+            for 并发症 in json_data["并发症"]:
+                self.g.run(
+                    "MATCH (a:疾病),(b:疾病) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:并发症]->(b)",
+                    a=json_data["名称"],
+                    b=并发症,
+                )
+
+    def create_association(self):
+        create_methods = [
+            self.create_疾病_to_分类,
+            self.create_疾病_to_科室,
+            self.create_疾病_to_治疗方式,
+            self.create_疾病_to_传染方式,
+            self.create_疾病_to_症状,
+            self.create_疾病_to_检查,
+            self.create_疾病_to_饮食保健,
+            self.create_疾病_to_忌吃食物,
+            self.create_疾病_to_推荐食物,
+            self.create_疾病_to_常用药品,
+            self.create_疾病_to_药品明细,
+            self.create_疾病_to_并发症,
+        ]
+        for method in create_methods:
+            method()
+
+
+if __name__ == "__main__":
+    handler = MedicalGraph()
+    handler.create_entity()
+    handler.create_association()
