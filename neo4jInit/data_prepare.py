@@ -14,7 +14,7 @@ def process_file(i):
     dict = {}
     dict["名称"] = data["basic_info"]["name"]
     dict["描述"] = data["basic_info"]["desc"]
-    dict["分类"] = data["basic_info"]["category"]
+    dict["分类"] = data["basic_info"]["category"][1:-1]
     dict["是否医保"] = (
         data["basic_info"]["attributes"][0].split("：")[1].replace(" ", "")
     )
@@ -80,7 +80,7 @@ def create_diseases():
     # 遍历这个文件夹
     for file in os.listdir(path):
         json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
-        # 节点的属性有 描述，是否医保，患病比例，易感人群
+        # 节点的属性有 名称，描述，是否医保，患病比例，易感人群
 
 
 if __name__ == "__main__":
