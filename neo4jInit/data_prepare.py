@@ -5,7 +5,7 @@ import concurrent.futures
 
 
 def process_file(i):
-    path = "./neo4jInit/data"
+    path = "./neo4jInit/data/spider_data"
     target_path = "./neo4jInit/data/new_data/"
     # 载入path
     with open(os.path.join(path, str(i) + ".json"), "r", encoding="utf-8") as f:
@@ -15,9 +15,13 @@ def process_file(i):
     dict["名称"] = data["basic_info"]["name"]
     dict["描述"] = data["basic_info"]["desc"]
     dict["分类"] = data["basic_info"]["category"]
-    dict["是否医保"] = data["basic_info"]["attributes"][0].split("：")[1]
+    dict["是否医保"] = (
+        data["basic_info"]["attributes"][0].split("：")[1].replace(" ", "")
+    )
     dict["患病比例"] = data["basic_info"]["attributes"][1].split("：")[1]
-    dict["易感人群"] = data["basic_info"]["attributes"][2].split("：")[1]
+    dict["易感人群"] = (
+        data["basic_info"]["attributes"][2].split("：")[1].replace(" ", "")
+    )
     dict["传染方式"] = data["basic_info"]["attributes"][3].split("：")[1]
     sym = data["basic_info"]["attributes"][4].split("：")[1]
     words = jieba.lcut(sym)
@@ -27,9 +31,9 @@ def process_file(i):
     )
     seg_list = [x for x in seg_list if x != " "]
     dict["就诊科室"] = seg_list
-    dict["治疗方式"] = data["basic_info"]["attributes"][6].split("：")[1]
+    dict["治疗方式"] = data["basic_info"]["attributes"][6].split("：")[1].split(" ")
     dict["治疗周期"] = data["basic_info"]["attributes"][7].split("：")[1]
-    dict["治愈率"] = data["basic_info"]["attributes"][8].split("：")[1]
+    dict["治愈率"] = data["basic_info"]["attributes"][8].split("：")[1].replace(" ", "")
     dict["治疗费用"] = data["basic_info"]["attributes"][9].split("：")[1]
     dict["推荐"] = data["basic_info"]["attributes"][10]
     dict["原因"] = data["cause_info"]
@@ -57,5 +61,28 @@ def prepare_data():
         executor.map(process_file, range(1, 10138))
 
 
+def get_entity():
+    dict = {}
+    dict["名称"] = set()
+    dict["分类"] = set()  # 去掉第一个疾病百科和最后一个重复名称
+    dict["就诊科室"] = set()
+    dict["治疗方式"] = set()
+    dict["传染方式"] = set()
+    dict["症状"] = set()
+    dict["检查"] = set()
+    dict["食物"] = set()
+    dict["药品"] = set()
+    dict["细分药品"] = set()
+
+
+def create_diseases():
+    path = "./neo4jInit/data/new_data"
+    # 遍历这个文件夹
+    for file in os.listdir(path):
+        json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
+        # 节点的属性有 描述，是否医保，患病比例，易感人群
+
+
 if __name__ == "__main__":
     prepare_data()
+    # create_diseases()
