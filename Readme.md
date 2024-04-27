@@ -2,6 +2,16 @@
 需要克隆，请使用命令`git clone --recurse-submodules https://github.com/shixunIV/BackEnd.git`递归的克隆
 Web端开发请在Web子目录下
 注意git提交规范！提交规范详见下面链接`https://juejin.cn/post/6844903793033756680`
+feat - 新功能 feature
+fix - 修复 bug
+docs - 文档注释
+style - 代码格式(不影响代码运行的变动)
+refactor - 重构、优化(既不增加新功能，也不是修复bug)
+perf - 性能优化
+test - 增加测试
+chore - 构建过程或辅助工具的变动
+revert - 回退
+build - 打包
 
 
 # 项目说明
@@ -50,7 +60,7 @@ food_url = "http://jib.xywy.com/il_sii/food/%s.htm" % page  # 饮食治疗
 导出所有的病例名称到disease.txt为了切割数据
 然后使用build_graph.py构建图数据库，时间大概需要一个小时，需要耐心等待
 
-## Patient 
+## Patient
 用与管理病人
 
 ## doctor
