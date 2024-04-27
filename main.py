@@ -1,24 +1,25 @@
-# 通过main.py一键启动所有服务
-import os
-import sys
-
-
 import subprocess
+from multiprocessing import Process
 
+def run_cmd(cmd):
+    subprocess.Popen(cmd, shell=True)
 
-def start_web():
-    subprocess.Popen("cd Web && npm i && npm run serve", shell=True)
+if __name__ == '__main__':
+    # 定义要运行的4个cmd命令
+    cmd_list = ["pnpm --dir Web serve", "cd gateway && go mod tidy && go run main.go"]
 
+    # 创建一个列表来存储进程
+    process_list = []
 
-def start_gateway():
-    subprocess.Popen("cd gateway && go mod tidy && go run main.go", shell=True)
+    # 为每个cmd命令创建一个进程，并将进程添加到列表中
+    for cmd in cmd_list:
+        process = Process(target=run_cmd, args=(cmd,))
+        process_list.append(process)
 
+    # 启动所有进程
+    for process in process_list:
+        process.start()
 
-def start_neo4j():
-    subprocess.Popen("cd neo4j && python main.py", shell=True)
-
-
-if __name__ == "__main__":
-    start_web()
-    start_gateway()
-    start_neo4j()
+    # 等待所有进程结束
+    for process in process_list:
+        process.join()
