@@ -2,4 +2,4 @@
 **/.idea
 **/*.db
 **/.DS_Store
-config.yml
+**/config.yml
