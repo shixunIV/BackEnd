@@ -18,6 +18,7 @@ func createReverseProxy(target string) gin.HandlerFunc {
 
 var routerMapper = map[string]string{
 	"patient": "http://127.0.0.1:9001",
+	"neo4j":   "http://127.0.0.1:9002",
 }
 
 func InitRouter() *gin.Engine {
@@ -37,6 +38,10 @@ func InitRouter() *gin.Engine {
 		patient := api.Group("patient")
 		{
 			patient.Any("/:any", createReverseProxy(routerMapper["patient"]))
+		}
+		neo4j := api.Group("neo4j")
+		{
+			neo4j.Any("/:any", createReverseProxy(routerMapper["neo4j"]))
 		}
 	}
 	return r

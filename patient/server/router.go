@@ -1,6 +1,7 @@
 package server
 
 import (
+	"patient/server/middlewares"
 	"patient/server/service"
 
 	"github.com/gin-contrib/cors"
@@ -20,6 +21,7 @@ func InitRouter() *gin.Engine {
 	api := r.Group("api")
 	api.Use(gin.Recovery())
 	api.Use(gin.Logger())
+	api.Use(middlewares.IPAuthMiddleware())
 	{
 		patient := api.Group("patient")
 		{
