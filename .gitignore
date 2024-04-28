@@ -3,3 +3,4 @@
 **/*.db
 **/.DS_Store
 **/config.yml
+**/__pycache__
