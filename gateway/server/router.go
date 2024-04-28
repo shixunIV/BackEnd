@@ -36,10 +36,10 @@ func InitRouter() *gin.Engine {
 	{
 		patient := api.Group("patient")
 		{
-			patient.POST("/*", createReverseProxy(routerMapper["patient"]))
-			patient.GET("/*", createReverseProxy(routerMapper["patient"]))
-			patient.PUT("/*", createReverseProxy(routerMapper["patient"]))
-			patient.DELETE("/*", createReverseProxy(routerMapper["patient"]))
+			patient.POST("*", createReverseProxy(routerMapper["patient"]))
+			patient.GET("*", createReverseProxy(routerMapper["patient"]))
+			patient.PUT("*", createReverseProxy(routerMapper["patient"]))
+			patient.DELETE("*", createReverseProxy(routerMapper["patient"]))
 		}
 	}
 	return r
