@@ -1,12 +1,17 @@
 import subprocess
 from multiprocessing import Process
 
+
 def run_cmd(cmd):
     subprocess.Popen(cmd, shell=True)
 
-if __name__ == '__main__':
-    # 定义要运行的4个cmd命令
-    cmd_list = ["pnpm --dir Web serve", "cd gateway && go mod tidy && go run main.go"]
+
+if __name__ == "__main__":
+    cmd_list = [
+        "pnpm --dir Web serve",
+        "cd gateway && go mod tidy && go run main.go",
+        "cd patient && go mod tidy && go run main.go",
+    ]
 
     # 创建一个列表来存储进程
     process_list = []

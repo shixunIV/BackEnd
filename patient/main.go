@@ -17,7 +17,7 @@ func main() {
 	Init()
 	api := server.InitRouter()
 
-	err := api.Run(":9000")
+	err := api.Run(":9001")
 	if err != nil {
 		log.Panicln(err)
 	}
