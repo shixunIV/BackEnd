@@ -29,6 +29,7 @@ func InitRouter() *gin.Engine {
 			patient.POST("login", service.HandlerBind(&service.Login{}))
 			// POST api/patient/register | 注册
 			patient.POST("register", service.HandlerBind(&service.Register{}))
+			// POST api/patient/
 		}
 	}
 	return r

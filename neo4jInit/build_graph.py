@@ -42,19 +42,19 @@ class MedicalGraph:
             # 疾病节点的属性有 名称，描述，是否医保，患病比例，易感人群,治疗周期,治愈率,治疗费用,推荐,原因,预防,具体表现
             self.g.create(
                 Node(
-                    "疾病",
-                    名称=json_data["名称"],
-                    描述=json_data["描述"][0],
-                    是否医保=json_data["是否医保"],
-                    患病比例=json_data["患病比例"],
-                    易感人群=json_data["易感人群"],
-                    治疗周期=json_data["治疗周期"],
-                    治愈率=json_data["治愈率"],
-                    治疗费用=json_data["治疗费用"],
-                    疾病小贴士=json_data["推荐"],
-                    原因=json_data["原因"],
-                    预防=json_data["预防"],
-                    具体表现=json_data["具体表现"][0],
+                    "illness",
+                    name=json_data["名称"],
+                    desc=json_data["描述"][0],
+                    medical_insurance=json_data["是否医保"],
+                    disease_proportion=json_data["患病比例"],
+                    susceptible_population=json_data["易感人群"],
+                    treatment_cycle=json_data["治疗周期"],
+                    cure_rate=json_data["治愈率"],
+                    treatment_cost=json_data["治疗费用"],
+                    disease_tips=json_data["推荐"],
+                    reason=json_data["原因"],
+                    prevention=json_data["预防"],
+                    concrete_performance=json_data["具体表现"][0],
                 )
             )
 
@@ -70,7 +70,7 @@ class MedicalGraph:
                     set_food.add(food)
 
         for food in set_food:
-            self.g.create(Node("食物", 名称=food))
+            self.g.create(Node("food", name=food))
 
     def create_drug(self):
         path = "./neo4jInit/data/new_data"
@@ -87,10 +87,10 @@ class MedicalGraph:
                 set_drug_detail.add(drug)
 
         for drug in set_drug_常用:
-            self.g.create(Node("常用药品", 名称=drug))
+            self.g.create(Node("commonly_used_drugs", name=drug))
 
         for drug in set_drug_detail:
-            self.g.create(Node("药品明细", 名称=drug))
+            self.g.create(Node("details_of_drugs", name=drug))
 
     def create_分类(self):
         path = "./neo4jInit/data/new_data"
@@ -102,7 +102,7 @@ class MedicalGraph:
                 set_分类.add(分类)
 
         for tag in set_分类:
-            self.g.create(Node("分类", 名称=tag))
+            self.g.create(Node("classification", name=tag))
 
     def create_科室(self):
         path = "./neo4jInit/data/new_data"
@@ -113,7 +113,7 @@ class MedicalGraph:
                 set_科室.add(就诊科室)
 
         for tag in set_科室:
-            self.g.create(Node("就诊科室", 名称=tag))
+            self.g.create(Node("medical_department", name=tag))
 
     def create_治疗方式(self):
         path = "./neo4jInit/data/new_data"
@@ -124,7 +124,7 @@ class MedicalGraph:
                 set_治疗方式.add(治疗方式)
 
         for tag in set_治疗方式:
-            self.g.create(Node("治疗方式", 名称=tag))
+            self.g.create(Node("mode_of_treatment", name=tag))
 
     def create_症状(self):
         path = "./neo4jInit/data/new_data"
@@ -135,7 +135,7 @@ class MedicalGraph:
                 set_症状.add(症状)
 
         for tag in set_症状:
-            self.g.create(Node("症状", 名称=tag))
+            self.g.create(Node("symptom", name=tag))
 
     def create_检查(self):
         path = "./neo4jInit/data/new_data"
@@ -146,7 +146,7 @@ class MedicalGraph:
                 set_检查.add(检查)
 
         for tag in set_检查:
-            self.g.create(Node("检查方式", 名称=tag))
+            self.g.create(Node("inspection_mode", name=tag))
 
     def create_传染方式(self):
         path = "./neo4jInit/data/new_data"
@@ -157,7 +157,7 @@ class MedicalGraph:
                 set_传染方式.add(传染方式)
 
         for tag in set_传染方式:
-            self.g.create(Node("传染方式", 名称=tag))
+            self.g.create(Node("mode_of_infection", name=tag))
 
     def create_entity(self):
         create_methods = [
@@ -180,7 +180,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 分类 in json_data["分类"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:分类) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:属于]->(b)",
+                    "MATCH (a:illness),(b:classification) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:belong]->(b)",
                     a=json_data["名称"],
                     b=分类,
                 )
@@ -191,7 +191,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 就诊科室 in json_data["就诊科室"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:就诊科室) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:就诊科室]->(b)",
+                    "MATCH (a:illness),(b:medical_department) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:medical_department]->(b)",
                     a=json_data["名称"],
                     b=就诊科室,
                 )
@@ -202,7 +202,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 治疗方式 in json_data["治疗方式"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:治疗方式) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:治疗方式]->(b)",
+                    "MATCH (a:illness),(b:mode_of_treatment) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:mode_of_treatment]->(b)",
                     a=json_data["名称"],
                     b=治疗方式,
                 )
@@ -213,7 +213,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 传染方式 in json_data["传染方式"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:传染方式) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:传染方式]->(b)",
+                    "MATCH (a:illness),(b:mode_of_infection) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:mode_of_infection]->(b)",
                     a=json_data["名称"],
                     b=传染方式,
                 )
@@ -224,7 +224,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 症状 in json_data["症状"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:症状) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:症状]->(b)",
+                    "MATCH (a:illness),(b:symptom) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:symptom]->(b)",
                     a=json_data["名称"],
                     b=症状,
                 )
@@ -235,7 +235,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 检查 in json_data["检查"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:检查方式) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:检查]->(b)",
+                    "MATCH (a:illness),(b:inspection_mode) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:inspection_mode]->(b)",
                     a=json_data["名称"],
                     b=检查,
                 )
@@ -246,7 +246,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 饮食保健 in json_data["饮食保健"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:食物) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:饮食保健]->(b)",
+                    "MATCH (a:illness),(b:food) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:diet_and_health_care]->(b)",
                     a=json_data["名称"],
                     b=饮食保健,
                 )
@@ -257,7 +257,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 忌吃食物 in json_data["忌吃食物"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:食物) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:忌吃食物]->(b)",
+                    "MATCH (a:illness),(b:food) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:avoid_eating_food]->(b)",
                     a=json_data["名称"],
                     b=忌吃食物,
                 )
@@ -268,7 +268,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 推荐食物 in json_data["推荐食物"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:食物) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:推荐食物]->(b)",
+                    "MATCH (a:illness),(b:food) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:recommend_food]->(b)",
                     a=json_data["名称"],
                     b=推荐食物,
                 )
@@ -279,7 +279,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 常用药品 in json_data["常用药品"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:常用药品) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:常用药品]->(b)",
+                    "MATCH (a:illness),(b:commonly_used_drugs) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:commonly_used_drugs]->(b)",
                     a=json_data["名称"],
                     b=常用药品,
                 )
@@ -290,7 +290,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 药品明细 in json_data["药品明细"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:药品明细) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:药品明细]->(b)",
+                    "MATCH (a:illness),(b:details_of_drugs) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:details_of_drugs]->(b)",
                     a=json_data["名称"],
                     b=药品明细,
                 )
@@ -301,7 +301,7 @@ class MedicalGraph:
             json_data = json.load(open(os.path.join(path, file), "r", encoding="utf-8"))
             for 并发症 in json_data["并发症"]:
                 self.g.run(
-                    "MATCH (a:疾病),(b:疾病) WHERE a.名称 = $a AND b.名称 = $b CREATE (a)-[r:并发症]->(b)",
+                    "MATCH (a:illness),(b:illness) WHERE a.name = $a AND b.name = $b CREATE (a)-[r:symptom]->(b)",
                     a=json_data["名称"],
                     b=并发症,
                 )
