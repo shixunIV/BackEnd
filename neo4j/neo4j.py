@@ -24,7 +24,7 @@ class Neo4j:
         return res
 
     def ask_neo4j(self, question):
-        return GPT.generate_ans("阳痿吃什么", neo4j.run(GPT.generate_sql("阳痿吃什么")))
+        return self.GPT.generate_ans(question, self.run(self.GPT.generate_sql(question)))
 
 
 if __name__ == "__main__":

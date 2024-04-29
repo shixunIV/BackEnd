@@ -1,8 +1,5 @@
 from flask import Flask, request, jsonify
-import json
-import os
 import yaml
-from py2neo import Graph, Node
 from neo4j import Neo4j
 
 
@@ -25,4 +22,4 @@ def ask_question():
 
 
 if __name__ == "__main__":
-    app.run(port=9001)
+    app.run(port=9002)

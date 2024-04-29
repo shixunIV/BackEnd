@@ -117,7 +117,7 @@ class GPT:
                 },
             ],
         )
-        print(f"问题:{question}  查询结果{ans}")
+        print(f"问题:{question}  查询结果{ans}")#
         return response.choices[0].message.content.strip()
 
 

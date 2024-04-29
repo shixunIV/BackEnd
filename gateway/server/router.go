@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"net/http/httputil"
 	"net/url"
 
@@ -12,6 +13,7 @@ func createReverseProxy(target string) gin.HandlerFunc {
 	targetUrl, _ := url.Parse(target)
 	proxy := httputil.NewSingleHostReverseProxy(targetUrl)
 	return func(c *gin.Context) {
+		fmt.Printf("Forwarding request: %s\n", c.Request.URL)
 		proxy.ServeHTTP(c.Writer, c.Request)
 	}
 }
@@ -35,13 +37,13 @@ func InitRouter() *gin.Engine {
 	api.Use(gin.Recovery())
 	api.Use(gin.Logger())
 	{
-		patient := api.Group("patient")
-		{
-			patient.Any("/:any", createReverseProxy(routerMapper["patient"]))
-		}
 		neo4j := api.Group("neo4j")
 		{
-			neo4j.Any("/:any", createReverseProxy(routerMapper["neo4j"]))
+			neo4j.Any("", createReverseProxy(routerMapper["neo4j"]))
+		}
+		patient := api.Group("patient")
+		{
+			patient.Any("", createReverseProxy(routerMapper["patient"]))
 		}
 	}
 	return r
