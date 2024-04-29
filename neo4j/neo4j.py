@@ -24,7 +24,11 @@ class Neo4j:
         return res
 
     def ask_neo4j(self, question):
-        return self.GPT.generate_ans(question, self.run(self.GPT.generate_sql(question)))
+        ans = self.run(self.GPT.generate_sql(question))
+        if ans != "出错啦！":
+            return self.GPT.generate_ans(question, ans)
+        else:
+            return "数据库并没有查询到哦"
 
 
 if __name__ == "__main__":
