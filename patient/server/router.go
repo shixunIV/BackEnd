@@ -29,7 +29,20 @@ func InitRouter() *gin.Engine {
 			patient.POST("login", service.HandlerBind(&service.Login{}))
 			// POST api/patient/register | 注册
 			patient.POST("register", service.HandlerBind(&service.Register{}))
-			// POST api/patient/
+			// PUT api/patient/changePassword | 修改个人信息
+			patient.PUT("changePassword", service.HandlerBind(&service.UpdatePassword{}))
+
+			// POST api/patient/changeAvatar | 修改头像
+			auth := patient.Group("")
+			auth.Use(middlewares.TokenAuthorization())
+			{
+				// PUT api/patient/changeAvatar | 修改头像
+				auth.PUT("changeAvatar", service.HandlerBind(&service.ChangeAvatar{}))
+				// GET api/patient 	| 获取个人信息
+				auth.GET("", service.HandlerNoBind(&service.GetPatient{}))
+				// PUT api/patient/update | 修改个人信息
+				auth.PUT("update", service.HandlerBind(&service.UpdatePatient{}))
+			}
 		}
 	}
 	return r

@@ -69,3 +69,4 @@ func HandlerWithBindType(s Service, bindType int) gin.HandlerFunc {
 		}
 	}
 }
+

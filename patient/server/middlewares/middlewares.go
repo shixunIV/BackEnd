@@ -3,6 +3,7 @@ package middlewares
 import (
 	"net"
 	"net/http"
+	"patient/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +23,20 @@ func IPAuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		c.Next()
+	}
+}
+
+func TokenAuthorization() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		token := c.GetHeader("Authorization")
+		jwt, err := utils.ParseToken(token)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
+			c.Abort()
+			return
+		}
+		c.Set("id", jwt.ID)
 		c.Next()
 	}
 }

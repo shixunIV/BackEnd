@@ -61,22 +61,21 @@ func GetPatientByPhone(phone string) (*Patient, error) {
 	return &patient, err
 }
 
-func UpdatePatient(id string, name string, age int, gender string, phone string, password string) error {
+func UpdatePatient(id string, name string, age int, gender string, phone string) error {
 	var patient Patient
-	if DB.First(&patient, id).Error != nil {
+	if DB.Where("id = ?", id).First(&patient).Error != nil {
 		return errors.New("患者不存在")
 	}
 	patient.Name = name
 	patient.Age = age
 	patient.Gender = gender
 	patient.Phone = phone
-	patient.Password = password
 	return DB.Save(&patient).Error
 }
 
 func UpdateAvatar(id string, avatar string) error {
 	var patient Patient
-	if DB.First(&patient, id).Error != nil {
+	if DB.Where("id = ?", id).First(&patient).Error != nil {
 		return errors.New("患者不存在")
 	}
 	patient.Avatar = avatar
@@ -85,7 +84,7 @@ func UpdateAvatar(id string, avatar string) error {
 
 func GetAvatar(id string) (string, error) {
 	var patient Patient
-	if DB.First(&patient, id).Error != nil {
+	if DB.Where("id = ?", id).First(&patient).Error != nil {
 		return "", errors.New("患者不存在")
 	}
 	return patient.Avatar, nil
@@ -112,4 +111,20 @@ func getDefaultAvatar() string {
 	}
 	imgBase64Str := base64.StdEncoding.EncodeToString(imgData)
 	return imgBase64Str
+}
+
+func ChangePassword(id string, newPassword string, oldPassword string) error {
+	var patient Patient
+	if DB.Where("id = ?", id).First(&patient).Error != nil {
+		return errors.New("患者不存在")
+	}
+	if !utils.ComparePasswords(patient.Password, oldPassword, config.CFG.Salt) {
+		return errors.New("密码错误")
+	}
+	password, err := utils.HashPassword(newPassword, config.CFG.Salt)
+	if err != nil {
+		return err
+	}
+	patient.Password = password
+	return DB.Save(&patient).Error
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"patient/config"
 	"patient/models"
 	"patient/utils"
@@ -52,4 +53,52 @@ func (s *Register) Handle(c *gin.Context) (any, error) {
 		return nil, err
 	}
 	return nil, nil
+}
+
+type ChangeAvatar struct {
+	Avatar string `form:"avatar"`
+}
+
+func (s *ChangeAvatar) Handle(c *gin.Context) (any, error) {
+	id, _ := c.Get("id")
+	if err := models.UpdateAvatar(id.(string), s.Avatar); err != nil {
+		return nil, err
+	}
+	return nil, nil
+}
+
+type GetPatient struct {
+}
+
+func (s *GetPatient) Handle(c *gin.Context) (any, error) {
+	id, _ := c.Get("id")
+	log.Print(id)
+	patient, err := models.GetPatientByID(id.(string))
+	if err != nil {
+		return nil, err
+	}
+	return patient, nil
+}
+
+type UpdatePassword struct {
+	Id          string `form:"id"`
+	OldPassword string `form:"old_password"`
+	NewPassword string `form:"new_password"`
+}
+
+func (s *UpdatePassword) Handle(c *gin.Context) (any, error) {
+	err := models.ChangePassword(s.Id, s.NewPassword, s.OldPassword)
+	return nil, err
+}
+
+type UpdatePatient struct {
+	Name   string `form:"name"`
+	Age    int    `form:"age"`
+	Gender string `from:"gender"`
+	Phone  string `form:"phone"`
+}
+
+func (s *UpdatePatient) Handle(c *gin.Context) (any, error) {
+	id, _ := c.Get("id")
+	return nil, models.UpdatePatient(id.(string), s.Name, s.Age, s.Gender, s.Phone)
 }
