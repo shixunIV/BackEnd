@@ -1,5 +1,19 @@
 import subprocess
 from multiprocessing import Process
+import os
+
+
+def generate_config():
+    if os.path.exists("./config.yml"):
+        return
+    with open("./config.yml", "w") as file:
+        file.write("neo4j:\n")
+        file.write("  port: 7687\n")
+        file.write("  user: neo4j\n")
+        file.write("  password: 12345678\n")
+        file.write("openai:\n")
+        file.write("  api_key: 你自己的api\n")
+        file.flush()
 
 
 def run_cmd(cmd):
@@ -7,6 +21,7 @@ def run_cmd(cmd):
 
 
 if __name__ == "__main__":
+    generate_config()
     cmd_list = [
         "pnpm --dir Web serve",
         "cd gateway && go mod tidy && go run main.go",

@@ -1,4 +1,5 @@
 from py2neo import Graph, Node
+from gpt import GPT
 
 
 class Neo4j:
@@ -13,6 +14,26 @@ class Neo4j:
             user=config["neo4j"]["user"],
             password=str(config["neo4j"]["password"]),
         )
+        self.GPT = GPT(config)
 
     def run(self, query):
-        return self.g.run(query)
+        ans = self.g.run(query)
+        res = []
+        for i in ans:
+            res.append(i)
+        return res
+
+    def ask_neo4j(self, question):
+        return GPT.generate_ans("阳痿吃什么", neo4j.run(GPT.generate_sql("阳痿吃什么")))
+
+
+if __name__ == "__main__":
+    config = {
+        "neo4j": {
+            "port": 7687,
+            "user": "neo4j",
+            "password": "12345678",
+        }
+    }
+    neo4j = Neo4j(config)
+    print(neo4j.ask_neo4j("阳痿吃什么"))
