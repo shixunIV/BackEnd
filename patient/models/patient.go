@@ -1,7 +1,11 @@
 package models
 
 import (
+	"encoding/base64"
 	"errors"
+	"io"
+	"log"
+	"os"
 	"patient/config"
 	"patient/utils"
 )
@@ -13,6 +17,7 @@ type Patient struct {
 	Gender   string `json:"gender"`
 	Phone    string `json:"phone" gorm:"unique"`
 	Password string `json:"-"`
+	Avatar   string `json:"avatar" gorm:"default:'https://cdn.jsdelivr.net/gh/linyows/images/2021/09/01/202109011634.jpg'"`
 }
 
 func CreatePatient(id string, name string, age int, gender string, phone string, password string) error {
@@ -39,6 +44,7 @@ func CreatePatient(id string, name string, age int, gender string, phone string,
 		Gender:   gender,
 		Phone:    phone,
 		Password: password,
+		Avatar:   getDefaultAvatar(),
 	}
 	return DB.Create(&patient).Error
 }
@@ -66,4 +72,44 @@ func UpdatePatient(id string, name string, age int, gender string, phone string,
 	patient.Phone = phone
 	patient.Password = password
 	return DB.Save(&patient).Error
+}
+
+func UpdateAvatar(id string, avatar string) error {
+	var patient Patient
+	if DB.First(&patient, id).Error != nil {
+		return errors.New("患者不存在")
+	}
+	patient.Avatar = avatar
+	return DB.Save(&patient).Error
+}
+
+func GetAvatar(id string) (string, error) {
+	var patient Patient
+	if DB.First(&patient, id).Error != nil {
+		return "", errors.New("患者不存在")
+	}
+	return patient.Avatar, nil
+}
+
+func getDefaultAvatar() string {
+	// 打开图片文件
+	file, err := os.Open("./assets/avatar.png")
+	if err != nil {
+		log.Fatalf("打开图片失败: %v", err)
+	}
+	defer file.Close()
+	imgData := make([]byte, 0)
+	buf := make([]byte, 1024)
+	for {
+		n, err := file.Read(buf)
+		if err != nil && err != io.EOF {
+			log.Fatalf("读取图片失败: %v", err)
+		}
+		if n == 0 {
+			break
+		}
+		imgData = append(imgData, buf[:n]...)
+	}
+	imgBase64Str := base64.StdEncoding.EncodeToString(imgData)
+	return imgBase64Str
 }
