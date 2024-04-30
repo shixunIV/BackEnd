@@ -43,6 +43,8 @@ func InitRouter() *gin.Engine {
 		}
 		patient := api.Group("patient")
 		{
+			patient.Any("login", createReverseProxy(routerMapper["patient"]))
+			patient.Any("register", createReverseProxy(routerMapper["patient"]))
 			patient.Any("", createReverseProxy(routerMapper["patient"]))
 		}
 	}
