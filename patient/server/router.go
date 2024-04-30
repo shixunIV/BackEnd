@@ -10,7 +10,7 @@ import (
 
 func InitRouter() *gin.Engine {
 	r := gin.New()
-
+	
 	//一些基础配置
 	config := cors.DefaultConfig()
 	config.ExposeHeaders = []string{"Authorization"}

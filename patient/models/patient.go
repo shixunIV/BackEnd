@@ -17,7 +17,7 @@ type Patient struct {
 	Gender   string `json:"gender"`
 	Phone    string `json:"phone" gorm:"unique"`
 	Password string `json:"-"`
-	Avatar   string `json:"avatar" gorm:"default:'https://cdn.jsdelivr.net/gh/linyows/images/2021/09/01/202109011634.jpg'"`
+	Avatar   string `json:"avatar"`
 }
 
 func CreatePatient(id string, name string, age int, gender string, phone string, password string) error {
