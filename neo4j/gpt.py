@@ -2,6 +2,7 @@ from openai import OpenAI
 import re
 import yaml
 
+# TODO!待修改的提示词
 prompt = """
 你现在是一个neo4j数据库查询高手
 # 所有实体结构：
@@ -117,7 +118,7 @@ class GPT:
                 },
             ],
         )
-        print(f"问题:{question}  查询结果{ans}")#
+        print(f"问题:{question}  查询结果{ans}")  #
         return response.choices[0].message.content.strip()
 
 
