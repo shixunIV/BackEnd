@@ -20,7 +20,7 @@ class Spider:
         html = response.text
         return html
 
-    def spiders(self):
+    def spiders_all(self):
         data = []
         url = "https://zh.wikipedia.org/wiki/%E9%90%B5%E8%B7%AF%E4%BA%8B%E6%95%85%E5%88%97%E8%A1%A8"
         html = self.get_html(url)
@@ -36,7 +36,38 @@ class Spider:
         with open(self.data_path, "w", encoding="utf-8") as f:
             json.dump(data, f, ensure_ascii=False)
 
+    def spiders_china(self):
+        data = []
+        url = "https://zh.wikipedia.org/wiki/%E4%B8%AD%E5%8D%8E%E4%BA%BA%E6%B0%91%E5%85%B1%E5%92%8C%E5%9B%BD%E9%93%81%E8%B7%AF%E4%BA%8B%E6%95%85%E5%88%97%E8%A1%A8"
+        html = self.get_html(url)
+        soup = BeautifulSoup(html, "lxml")
+        tr_tags = soup.find_all("tr")
+        for tr in tr_tags:
+            js = {}
+            tag = [
+                "日期",
+                "路线",
+                "地点",
+                "车次",
+                "事故类型",
+                "原因",
+                "死亡人数",
+                "受伤人数",
+                "备注",
+            ]
+            i = 0
+            for td in tr.find_all("td"):
+                js[tag[i]] = td.text.replace("\n", "")
+                i += 1
+            data.append(js)
+        print(data)
+        # 把data存入csv文件
+        os.makedirs(os.path.dirname(self.data_path), exist_ok=True)
+        with open(self.data_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False)
+
 
 if __name__ == "__main__":
     spider = Spider()
-    spider.spiders()
+    # spider.spiders()
+    spider.spiders_china()
