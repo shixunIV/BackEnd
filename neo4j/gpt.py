@@ -121,8 +121,21 @@ class GPT:
         print(f"问题:{question}  查询结果{ans}")  #
         return response.choices[0].message.content.strip()
 
+    def ask(self, question):
+        response = self.client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {
+                    "role": "user",
+                    "content": question,
+                },
+            ],
+        )
+        print(f"问题:{question}  查询结果{response.choices[0].message.content.strip()}")
+
 
 if __name__ == "__main__":
     config = read_config("./config.yml")
     gpt = GPT(config)
-    print(gpt.generate_sql("阳痿吃什么"))
+    # print(gpt.generate_sql("阳痿吃什么"))
+    gpt.ask("阳痿吃什么")
