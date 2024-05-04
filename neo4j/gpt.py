@@ -3,7 +3,7 @@ import re
 import yaml
 
 # TODO!待修改的提示词
-prompt ="""你现在是一个neo4j数据库查询高手,现在有一个铁路事故图数据库
+prompt = """你现在是一个neo4j数据库查询高手,现在有一个铁路事故图数据库
 # 所有实体结构([]中的是字段解释)：
 ```python
 Node("time", name["事故事件"])
@@ -86,11 +86,11 @@ class GPT:
             messages=[
                 {
                     "role": "user",
-                    "content": "你现在是一个医生，请你根据我的问题和根据该问题从数据库中查询出来的结果组织成人类语言返回",
+                    "content": "你现在是一个铁路事故问答机器人，请你根据我的问题和根据该问题从数据库中查询出来的结果组织成人类语言返回",
                 },
                 {
                     "role": "assistant",
-                    "content": "当然，请问你有什么健康问题需要咨询？",
+                    "content": "当然，请问你有什么铁路事故相关问题需要咨询？",
                 },
                 {
                     "role": "user",
@@ -117,5 +117,5 @@ class GPT:
 if __name__ == "__main__":
     config = read_config("./config.yml")
     gpt = GPT(config)
-    # print(gpt.generate_sql("阳痿吃什么"))
-    gpt.ask("阳痿吃什么")
+    print(gpt.generate_sql("哪些事故的是因为乘客造成的?"))
+    # gpt.ask("阳痿吃什么")

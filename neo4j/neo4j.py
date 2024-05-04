@@ -1,5 +1,5 @@
 from py2neo import Graph, Node
-from gpt import GPT
+from gpt import GPT, read_config
 
 
 class Neo4j:
@@ -24,7 +24,8 @@ class Neo4j:
         return res
 
     def ask_neo4j(self, question):
-        ans = self.run(self.GPT.generate_sql(question))
+        sql = self.GPT.generate_sql(question)
+        ans = self.run(sql)
         if ans != "出错啦！":
             return self.GPT.generate_ans(question, ans)
         else:
@@ -32,12 +33,6 @@ class Neo4j:
 
 
 if __name__ == "__main__":
-    config = {
-        "neo4j": {
-            "port": 7687,
-            "user": "neo4j",
-            "password": "12345678",
-        }
-    }
+    config = read_config("./config.yml")
     neo4j = Neo4j(config)
-    print(neo4j.ask_neo4j("阳痿吃什么"))
+    print(neo4j.ask_neo4j("哪些事故的是因为乘客造成的?"))

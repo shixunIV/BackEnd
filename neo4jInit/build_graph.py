@@ -168,7 +168,7 @@ class MedicalGraph:
             i += 1
             node1 = self.g.nodes.match("train_number", name=item["车次"]).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_train_number", node2)
+            relation = Relationship(node2, "occurrence_train_number", node1)
             self.g.create(relation)
 
     def create_事故类型_relation(self):
@@ -177,7 +177,7 @@ class MedicalGraph:
             i += 1
             node1 = self.g.nodes.match("accident_type", name=item["事故类型"]).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_accident_type", node2)
+            relation = Relationship(node2, "occurrence_accident_type", node1)
             self.g.create(relation)
 
     def create_详细原因_relation(self):
@@ -186,7 +186,7 @@ class MedicalGraph:
             i += 1
             node1 = self.g.nodes.match("detail_reason", name=item["原因"]).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_detail_reason", node2)
+            relation = Relationship(node2, "occurrence_detail_reason", node1)
             self.g.create(relation)
 
     def create_原因类型_relation(self):
@@ -197,7 +197,7 @@ class MedicalGraph:
                 "reason_type", name=item["列车组/乘客/环境/设备"]
             ).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_reason_type", node2)
+            relation = Relationship(node2, "occurrence_reason_type", node1)
             self.g.create(relation)
 
     def create_association(self):
