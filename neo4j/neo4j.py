@@ -26,9 +26,8 @@ class Neo4j:
         return res
 
     def insert_data(self, data):
-        max_index = self.run(
-            "MATCH (n:accident) RETURN max(n.index) as max_index"
-        )  # 获得最大的index
+        result = self.run("MATCH (n:accident) RETURN max(n.index) as max_index")
+        max_index = result[0]["max_index"]
         node = Node(
             "accident",
             index=max_index + 1,
@@ -37,7 +36,7 @@ class Neo4j:
         )
         self.g.create(node)
 
-        date = datetime.strptime(data["时间"], "%Y年%m月%d日").date()
+        date = datetime.strptime(data["日期"], "%Y年%m月%d日").date()
         time_node = self.run(f"MATCH (n:time) WHERE n.name='{date}' RETURN n")
         if not time_node:
             node = Node("time", name=date)

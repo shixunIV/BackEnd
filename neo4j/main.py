@@ -21,13 +21,6 @@ def ask_question():
     return jsonify({"answer": ans})
 
 
-@app.route("/api/neo4j", methods=["POST"])
-def insert_data():
-    data = request.json
-    ans = neo4j.insert_data(data)
-    return jsonify({"answer": ans})
-
-
 # {
 #     "日期": "1950年1月23日",
 #     "路线": "津浦",
@@ -39,7 +32,7 @@ def insert_data():
 #     "受伤人数": "46",
 #     "列车组/乘客/环境/设备": "列车组"
 # }
-@app.route("/api/neo4j/insert", methods=["POST"])
+@app.route("/api/neo4j", methods=["POST"])
 def insert_data():
     data = request.json
     ans = neo4j.insert_data(data)
