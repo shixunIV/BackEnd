@@ -33,6 +33,7 @@ class Neo4j:
             index=max_index + 1,
             death_toll=int(re.search(r"\d+", data["死亡人数"]).group()),
             injured_toll=int(re.search(r"\d+", data["受伤人数"]).group()),
+            detail_reasion=data["原因"],
         )
         self.g.create(node)
 
@@ -71,27 +72,40 @@ class Neo4j:
             node = Node("detail_reason", name=data["原因"])
             self.g.create(node)
 
-        # 创建联系
+        # [accident occurrence_time time]
+        # [time accident_happen accident]
+        # [accident occurrence_route route]
+        # [route accident_happen accident]
+        # [accident occurrence_place place]
+        # [place accident_happen accident]
+        # [accident occurrence_train_number train_number]
+        # [train_number accident_happen accident]
+        # [accident occurrence_accident_type accident_type]
+        # [accident_type accident_happen accident]
+        # [accident occurrence_reason_type reason_type]
+        # [reason_type accident_happen accident]
         self.g.run(
-            f"MATCH (a:accident),(b:time) WHERE a.index={max_index + 1} AND b.name='{date}' CREATE (a)-[r:occurrence_time]->(b)"
+            f"MATCH (a:accident), (b:time) WHERE a.index={max_index + 1} AND b.name='{date}' CREATE (a)-[:occurrence_time]->(b),(b)-[:accident_happen]->(a)"
         )
+
         self.g.run(
-            f"MATCH (a:accident),(b:route) WHERE a.index={max_index + 1} AND b.name='{data['路线']}' CREATE (a)-[r:occurrence_route]->(b)"
+            f"MATCH (a:accident), (b:route) WHERE a.index={max_index + 1} AND b.name='{data['路线']}' CREATE (a)-[:occurrence_route]->(b),(b)-[:accident_happen]->(a)"
         )
+
         self.g.run(
-            f"MATCH (a:accident),(b:place) WHERE a.index={max_index + 1} AND b.name='{data['地点']}' CREATE (a)-[r:occurrence_place]->(b)"
+            f"MATCH (a:accident), (b:place) WHERE a.index={max_index + 1} AND b.name='{data['地点']}' CREATE (a)-[:occurrence_place]->(b),(b)-[:accident_happen]->(a)"
         )
+
         self.g.run(
-            f"MATCH (a:accident),(b:checi) WHERE a.index={max_index + 1} AND b.name='{data['车次']}' CREATE (a)-[r:occurrence_train_number]->(b)"
+            f"MATCH (a:accident), (b:checi) WHERE a.index={max_index + 1} AND b.name='{data['车次']}' CREATE (a)-[:occurrence_train_number]->(b),(b)-[:accident_happen]->(a)"
         )
+
         self.g.run(
-            f"MATCH (a:accident),(b:accident_type) WHERE a.index={max_index + 1} AND b.name='{data['事故类型']}' CREATE (a)-[r:occurrence_accident_type]->(b)"
+            f"MATCH (a:accident), (b:accident_type) WHERE a.index={max_index + 1} AND b.name='{data['事故类型']}' CREATE (a)-[:occurrence_accident_type]->(b), (b)-[:accident_happen]->(a)"
         )
+
         self.g.run(
-            f"MATCH (a:accident),(b:detail_reason) WHERE a.index={max_index + 1} AND b.name='{data['原因']}' CREATE (a)-[r:occurrence_detail_reason]->(b)"
-        )
-        self.g.run(
-            f"MATCH (a:accident),(b:accident_type) WHERE a.index={max_index + 1} AND b.name='{data['列车组/乘客/环境/设备']}' CREATE (a)-[r:occurrence_reason_type]->(b)"
+            f"MATCH (a:accident), (b:reason_type) WHERE a.index={max_index + 1} AND b.name='{data['列车组/乘客/环境/设备']}' CREATE (a)-[:occurrence_reason_type]->(b), (b)-[:accident_happen]->(a)"
         )
 
         return "插入成功！"
