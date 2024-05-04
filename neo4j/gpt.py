@@ -2,11 +2,10 @@ from openai import OpenAI
 import re
 import yaml
 
-# TODO!待修改的提示词
 prompt = """你现在是一个neo4j数据库查询高手,现在有一个铁路事故图数据库
 # 所有实体结构([]中的是字段解释)：
 ```python
-Node("time", name["事故事件"])
+Node("time", name["事故时间"])
 
 Node("route", name["事故路线"])
 
@@ -16,25 +15,29 @@ Node("train_number", name["事故车次"])
 
 Node("accident_type", name["事故类型,比如山洪地震"])
 
-Node("detail_reason", name["事故详细原因"])
-
-Node("reason_type", name["事故原因分类,是乘务组原因还是环境还是乘客导致"])
+Node("reason_type", name["事故原因分类,是列车组原因还是环境还是乘客导致"])
 
 Node(
 	"accident",
 	index["事故索引"],
 	death_toll["死亡人数"],
 	injured_toll["受伤人数"],
+	detail_reason["事故详细原因"]
 )
 ```
 # 关系三元组
 [accident occurrence_time time]
-[ accident occurrence_route route]
+[time accident_happen accident]
+[accident occurrence_route route]
+[route accident_happen accident]
 [accident occurrence_place place]
+[place accident_happen accident]
 [accident occurrence_train_number train_number]
+[train_number accident_happen accident]
 [accident occurrence_accident_type accident_type]
-[accident occurrence_detail_reason detail_reason]
+[accident_type accident_happen accident]
 [accident occurrence_reason_type reason_type]
+[reason_type accident_happen accident]
 # 要求
 请你根据我接下来的问题给出对应的neo4j查询语句，neo4j语句需包含在```cypher```代码块中
 """
@@ -76,6 +79,7 @@ class GPT:
         )
         if match:
             cypher_query = match.group(1).strip()
+            print(cypher_query)
             return cypher_query
         else:
             return "出错啦！"
