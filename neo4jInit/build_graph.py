@@ -3,6 +3,8 @@ from py2neo import Graph, Node
 import os
 import yaml
 from py2neo import Relationship
+from datetime import datetime
+import re
 
 
 def read_config(file_path):
@@ -22,19 +24,30 @@ class MedicalGraph:
             user=config["neo4j"]["user"],
             password=str(config["neo4j"]["password"]),
         )
+
     def read_nodes(self):
         data = []
         for file in os.listdir(self.data_path):
             with open(os.path.join(self.data_path, file), "r", encoding="utf-8") as f:
                 data.append(json.load(f))
         return data
-    
+
     def create_time_node(self):
         time = set()
         for item in self.data:
             time.add(item["日期"])
         for item in time:
-            node = Node("time", name=item)
+            # 尝试使用第一种格式解析日期
+            try:
+                date = datetime.strptime(item, "%Y年%m月%d日").date()
+            except ValueError:
+                # 如果第一种格式失败，尝试使用第二种格式
+                try:
+                    date = datetime.strptime(item, "%Y年%m月%d日%H时%M分").date()
+                except ValueError:
+                    print(f"无法解析日期: {item}")
+                    continue
+            node = Node("time", name=date)
             self.g.create(node)
 
     def create_route_node(self):
@@ -92,8 +105,8 @@ class MedicalGraph:
             node = Node(
                 "accident",
                 index=i,
-                death_toll=item["死亡人数"],
-                injured_toll=item["受伤人数"],
+                death_toll=int(re.search(r"\d+", item["死亡人数"]).group()),
+                injured_toll=int(re.search(r"\d+", item["受伤人数"]).group()),
             )
             self.g.create(node)
 
@@ -115,9 +128,20 @@ class MedicalGraph:
         i = 0
         for item in self.data:
             i += 1
-            node1 = self.g.nodes.match("time", name=item["日期"]).first()
+            try:
+                date = datetime.strptime(item["日期"], "%Y年%m月%d日").date()
+            except ValueError:
+                # 如果第一种格式失败，尝试使用第二种格式
+                try:
+                    date = datetime.strptime(
+                        item["日期"], "%Y年%m月%d日%H时%M分"
+                    ).date()
+                except ValueError:
+                    print(f"无法解析日期: {item}")
+                    continue
+            node1 = self.g.nodes.match("time", name=date).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_time", node2)
+            relation = Relationship(node2, "occurrence_time", node1)
             self.g.create(relation)
 
     def create_route_relation(self):
@@ -126,7 +150,7 @@ class MedicalGraph:
             i += 1
             node1 = self.g.nodes.match("route", name=item["路线"]).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_route", node2)
+            relation = Relationship(node2, "occurrence_route", node1)
             self.g.create(relation)
 
     def create_place_relation(self):
@@ -135,7 +159,7 @@ class MedicalGraph:
             i += 1
             node1 = self.g.nodes.match("place", name=item["地点"]).first()
             node2 = self.g.nodes.match("accident", index=i).first()
-            relation = Relationship(node1, "occurrence_place", node2)
+            relation = Relationship(node2, "occurrence_place", node1)
             self.g.create(relation)
 
     def create_checi_relation(self):

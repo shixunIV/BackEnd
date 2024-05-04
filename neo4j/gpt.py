@@ -3,58 +3,38 @@ import re
 import yaml
 
 # TODO!待修改的提示词
-prompt = """
-你现在是一个neo4j数据库查询高手
-# 所有实体结构：
+prompt ="""你现在是一个neo4j数据库查询高手,现在有一个铁路事故图数据库
+# 所有实体结构([]中的是字段解释)：
 ```python
+Node("time", name["事故事件"])
+
+Node("route", name["事故路线"])
+
+Node("place", name["事故地点"])
+
+Node("train_number", name["事故车次"])
+
+Node("accident_type", name["事故类型,比如山洪地震"])
+
+Node("detail_reason", name["事故详细原因"])
+
+Node("reason_type", name["事故原因分类,是乘务组原因还是环境还是乘客导致"])
+
 Node(
-	"illness",
-	name["名称"],
-	desc["描述"],
-	medical_insurance["是否医保"],
-	disease_proportion["患病比例"],
-	susceptible_population["易感人群"],
-	treatment_cycle["治疗周期"],
-	cure_rate["治愈率"],
-	treatment_cost["治疗费用"],
-	disease_tips["推荐"],
-	reason["原因"],
-	prevention["预防"],
-	concrete_performance["具体表现"],
+	"accident",
+	index["事故索引"],
+	death_toll["死亡人数"],
+	injured_toll["受伤人数"],
 )
-
-Node("food", name["食品名称"])
-
-Node("commonly_used_drugs", name["药品名称"])
-
-Node("details_of_drugs", name["药品名称"])
-
-Node("category", name["疾病分类"])
-
-Node("medical_department", name["就诊科室"])
-
-Node("treatment_mode", name["治疗方式"]
-
-Node("symptom", name["症状"])	
-
-Node("inspection_mode", name["检查方式"])
-
-Node("infection_mode", name["传染方式"]) 
 ```
 # 关系三元组
-
-[illness belong category]
-[illness medical_department medical_department]
-[illness treatment_mode treatment_mode]
-[illness infection_mode infection_mode]
-[illness symptom symptom]
-[illness inspection_mode inspection_mode]
-[illness diet_and_health_care food]
-[illness avoid_eating_food food]
-[illness recommend_food food]
-[illness commonly_used_drugs commonly_used_drugs]
-[illness details_of_drugs details_of_drugs]
-[illness compliation illness]
+[accident occurrence_time time]
+[ accident occurrence_route route]
+[accident occurrence_place place]
+[accident occurrence_train_number train_number]
+[accident occurrence_accident_type accident_type]
+[accident occurrence_detail_reason detail_reason]
+[accident occurrence_reason_type reason_type]
 # 要求
 请你根据我接下来的问题给出对应的neo4j查询语句，neo4j语句需包含在```cypher```代码块中
 """
