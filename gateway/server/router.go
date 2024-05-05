@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"net/http"
 	"net/http/httputil"
 	"net/url"
 
@@ -12,6 +13,10 @@ import (
 func createReverseProxy(target string) gin.HandlerFunc {
 	targetUrl, _ := url.Parse(target)
 	proxy := httputil.NewSingleHostReverseProxy(targetUrl)
+	proxy.ModifyResponse = func(res *http.Response) error {
+		res.Header = http.Header{}
+		return nil
+	}
 	return func(c *gin.Context) {
 		fmt.Printf("Forwarding request: %s\n", c.Request.URL)
 		proxy.ServeHTTP(c.Writer, c.Request)
