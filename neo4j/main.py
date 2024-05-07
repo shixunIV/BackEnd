@@ -21,5 +21,23 @@ def ask_question():
     return jsonify({"answer": ans})
 
 
+# {
+#     "日期": "1950年1月23日",
+#     "路线": "津浦",
+#     "地点": "南京市花旗营站",
+#     "车次": "2404（军用列车）301次旅客列车",
+#     "事故类型": "正面相撞",
+#     "原因": "扳道工操作失误",
+#     "死亡人数": "16",
+#     "受伤人数": "46",
+#     "列车组/乘客/环境/设备": "列车组"
+# }
+@app.route("/api/neo4j", methods=["POST"])
+def insert_data():
+    data = request.json
+    ans = neo4j.insert_data(data)
+    return jsonify({"answer": ans})
+
+
 if __name__ == "__main__":
     app.run(port=9002)
