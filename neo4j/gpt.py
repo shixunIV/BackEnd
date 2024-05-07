@@ -118,4 +118,3 @@ if __name__ == "__main__":
     config = read_config("./config.yml")
     gpt = GPT(config)
     print(gpt.generate_sql("哪些事故的是因为乘客造成的?"))
-    # gpt.ask("阳痿吃什么")
