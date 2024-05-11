@@ -25,10 +25,33 @@ def ask_question():
     return response
 
 
-@app.route("/api/neo4j", methods=["POST"])
+@app.route("/api/neo4j/accident", methods=["POST"])
 def insert_data():
     data = request.json
     ans = neo4j.insert_data(data)
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+    )
+    return response
+
+
+@app.route("/api/neo4j/accident", methods=["GET"])
+def get_lists():
+    page = request.args.get("page", default=1, type=int)
+    page_size = request.args.get("page_size", default=10, type=int)
+    ans = neo4j.run(
+        f"MATCH (n:accident) RETURN n SKIP {page_size * (page - 1)} LIMIT {page_size}"
+    )
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+    )
+    return response
+
+
+@app.route("/api/neo4j/accident", methods=["DELETE"])
+def delete_data():
+    index = request.args.get("index", default=0, type=int)
+    ans = neo4j.run(f"MATCH (n:accident) WHERE n.index={index} DETACH DELETE n")
     response = Response(
         json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
     )
