@@ -2,6 +2,8 @@ from flask import Flask, request, jsonify, Response
 import yaml
 from neo4j import Neo4j
 import json
+import my_jwt
+from functools import wraps
 
 
 def read_config(file_path):
@@ -13,9 +15,26 @@ def read_config(file_path):
 app = Flask(__name__)
 config = read_config("../config.yml")
 neo4j = Neo4j(config)
+jwt = my_jwt.MyJwt()
+
+
+def middleware(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        token = request.headers.get("Authorization")
+        if not token:
+            return jsonify({"message": "Token is missing"}), 401
+        sign = jwt.parse_token(token)
+        if sign != True:
+            return jsonify({"message": sign}), 401
+        response = f(*args, **kwargs)
+        return response
+
+    return decorated_function
 
 
 @app.route("/api/neo4j", methods=["GET"])
+@middleware
 def ask_question():
     question = request.args.get("question", default="", type=str)
     ans = neo4j.ask_neo4j(question)
@@ -26,6 +45,7 @@ def ask_question():
 
 
 @app.route("/api/neo4j/accident", methods=["POST"])
+@middleware
 def insert_data():
     data = request.json
     ans = neo4j.insert_data(data)
@@ -36,6 +56,7 @@ def insert_data():
 
 
 @app.route("/api/neo4j/accident", methods=["GET"])
+@middleware
 def get_lists():
     page = request.args.get("page", default=1, type=int)
     page_size = request.args.get("page_size", default=10, type=int)
@@ -49,6 +70,7 @@ def get_lists():
 
 
 @app.route("/api/neo4j/accident", methods=["DELETE"])
+@middleware
 def delete_data():
     index = request.args.get("index", default=0, type=int)
     ans = neo4j.run(f"MATCH (n:accident) WHERE n.index={index} DETACH DELETE n")
@@ -59,6 +81,7 @@ def delete_data():
 
 
 @app.route("/api/neo4j/accident", methods=["PUT"])
+@middleware
 def update_data():
     data = request.json
     index = data["index"]
