@@ -58,5 +58,18 @@ def delete_data():
     return response
 
 
+@app.route("/api/neo4j/accident", methods=["PUT"])
+def update_data():
+    data = request.json
+    index = data["index"]
+    ans = neo4j.run(
+        f"MATCH (n:accident) WHERE n.index={index} SET n.death_toll={data['death_toll']},n.injured_toll={data['injured_toll']},n.detail_reason='{data['detail_reason']}'"
+    )
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+    )
+    return response
+
+
 if __name__ == "__main__":
     app.run(port=9002)
