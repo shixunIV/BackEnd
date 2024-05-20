@@ -35,3 +35,35 @@ def get_lists():
     )
     return response
 
+
+@hidden_danger_api.route("/", methods=["POST"])
+@jwt_auth
+def insert_data():
+    data = request.json
+    ans = neo4j.insert_data_danger(data)
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+    )
+    return response
+
+
+@hidden_danger_api.route("/", methods=["DELETE"])
+@jwt_auth
+def delete_data():
+    id = request.args.get("id", default=0, type=int)
+    ans = neo4j.run(f"MATCH (n:hidden_danger) WHERE n.id={id} DETACH DELETE n")
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+    )
+    return response
+
+
+@hidden_danger_api.route("/", methods=["POST"])
+@jwt_auth
+def insert_data():
+    data = request.json
+    ans = neo4j.insert_data_danger(data)
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+    )
+    return response

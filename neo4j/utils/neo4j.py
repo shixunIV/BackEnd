@@ -1,4 +1,4 @@
-from py2neo import Graph, Node
+from py2neo import Graph, Node, Relationship
 from utils.gpt import GPT, read_config
 import re
 from datetime import datetime
@@ -24,6 +24,43 @@ class Neo4j:
         for i in ans:
             res.append(i)
         return res
+
+    def insert_data_danger(self, data):
+        node = Node(
+            "hidden_danger",
+            id=data["隐患编号"],
+            troubleshooting_item_point=data["排查项点（风险点）"],
+            troubleshooting_content=data["排查内容（危险源）"],
+            troubleshooting_description=data["隐患描述"],
+            inspection_time=data["排查时间"],
+            place=data["隐患地点"],
+        )
+        self.g.create(node)
+        # 隐患等级如果没有就创建
+        node2 = self.g.nodes.match("hidden_danger_level", name=data["隐患等级"]).first()
+        if not node2:
+            node2 = Node("hidden_danger_level", name=data["隐患等级"])
+            self.g.create(node2)
+        node3 = self.g.nodes.match(
+            "hidden_danger_classification", name=data["隐患分类"]
+        ).first()
+        if not node3:
+            node3 = Node("hidden_danger_classification", name=data["隐患分类"])
+            self.g.create(node3)
+        node4 = self.g.nodes.match(
+            "hidden_danger_source", name=data["隐患来源"]
+        ).first()
+        if not node4:
+            node4 = Node("hidden_danger_source", name=data["隐患来源"])
+            self.g.create(node4)
+        node5 = self.g.nodes.match("hidden_danger_type", name=data["隐患类型"]).first()
+        if not node5:
+            node5 = Node("hidden_danger_type", name=data["隐患类型"])
+            self.g.create(node5)
+        self.g.create(Relationship(node, "hidden_danger_level", node2))
+        self.g.create(Relationship(node, "hidden_danger_classification", node3))
+        self.g.create(Relationship(node, "hidden_danger_source", node4))
+        self.g.create(Relationship(node, "hidden_danger_type", node5))
 
     def insert_data_accident(self, data):
         result = self.run("MATCH (n:accident) RETURN max(n.index) as max_index")
