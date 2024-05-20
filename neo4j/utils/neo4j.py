@@ -1,5 +1,5 @@
 from py2neo import Graph, Node
-from gpt import GPT, read_config
+from utils.gpt import GPT, read_config
 import re
 from datetime import datetime
 
@@ -72,18 +72,6 @@ class Neo4j:
             node = Node("detail_reason", name=data["原因"])
             self.g.create(node)
 
-        # [accident occurrence_time time]
-        # [time accident_happen accident]
-        # [accident occurrence_route route]
-        # [route accident_happen accident]
-        # [accident occurrence_place place]
-        # [place accident_happen accident]
-        # [accident occurrence_train_number train_number]
-        # [train_number accident_happen accident]
-        # [accident occurrence_accident_type accident_type]
-        # [accident_type accident_happen accident]
-        # [accident occurrence_reason_type reason_type]
-        # [reason_type accident_happen accident]
         self.g.run(
             f"MATCH (a:accident), (b:time) WHERE a.index={max_index + 1} AND b.name='{date}' CREATE (a)-[:occurrence_time]->(b),(b)-[:accident_happen]->(a)"
         )
@@ -110,11 +98,11 @@ class Neo4j:
 
         return "插入成功！"
 
-    def ask_neo4j(self, question):
-        sql = self.GPT.generate_sql(question)
+    def ask_neo4j_accident(self, question):
+        sql = self.GPT.generate_sql_accident(question)
         ans = self.run(sql)
         if ans != "出错啦！":
-            return self.GPT.generate_ans(question, ans)
+            return self.GPT.generate_ans_accident(question, ans)
         else:
             return "数据库并没有查询到哦"
 
@@ -122,4 +110,4 @@ class Neo4j:
 if __name__ == "__main__":
     config = read_config("./config.yml")
     neo4j = Neo4j(config)
-    print(neo4j.ask_neo4j("哪些事故的是因为乘客造成的?"))
+    print(neo4j.ask_neo4j_accident("哪些事故的是因为乘客造成的?"))

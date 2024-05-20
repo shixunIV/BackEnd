@@ -55,7 +55,7 @@ class GPT:
             api_key=config["openai"]["api_key"],
         )
 
-    def generate_sql(self, question):
+    def generate_sql_accident(self, question):
         global prompt
         response = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
@@ -84,7 +84,7 @@ class GPT:
         else:
             return "出错啦！"
 
-    def generate_ans(self, question, ans):
+    def generate_ans_accident(self, question, ans):
         response = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
@@ -121,4 +121,4 @@ class GPT:
 if __name__ == "__main__":
     config = read_config("./config.yml")
     gpt = GPT(config)
-    print(gpt.generate_sql("哪些事故的是因为乘客造成的?"))
+    print(gpt.generate_sql_accident("哪些事故的是因为乘客造成的?"))
