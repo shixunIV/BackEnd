@@ -25,7 +25,7 @@ class Neo4j:
             res.append(i)
         return res
 
-    def insert_data(self, data):
+    def insert_data_accident(self, data):
         result = self.run("MATCH (n:accident) RETURN max(n.index) as max_index")
         max_index = result[0]["max_index"]
         node = Node(
@@ -103,6 +103,14 @@ class Neo4j:
         ans = self.run(sql)
         if ans != "出错啦！":
             return self.GPT.generate_ans_accident(question, ans)
+        else:
+            return "数据库并没有查询到哦"
+
+    def ask_neo4j_danger(self, question):
+        sql = self.GPT.generate_sql_danger(question)
+        ans = self.run(sql)
+        if ans != "出错啦！":
+            return self.GPT.generate_ans_danger(question, ans)
         else:
             return "数据库并没有查询到哦"
 

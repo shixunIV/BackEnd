@@ -1,8 +1,9 @@
 from functools import wraps
-from flask import  request, jsonify
+from flask import request, jsonify
 import utils.my_jwt as my_jwt
 
 jwt = my_jwt.MyJwt()
+
 
 def jwt_auth(f):
     @wraps(f)

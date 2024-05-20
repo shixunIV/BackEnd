@@ -1,13 +1,13 @@
 from flask import Blueprint, request, Response
 import json
 from utils.neo4j import Neo4j
-from utils.config import read_config 
+from utils.config import read_config
 from middleware.jwt import jwt_auth
 
 # 创建 Blueprint
-accident_api = Blueprint('accident_api', __name__, url_prefix='/api/neo4j/accident')
+accident_api = Blueprint("accident_api", __name__, url_prefix="/api/neo4j/accident")
 
-# 初始化 Neo4j 
+# 初始化 Neo4j
 config = read_config("../config.yml")
 neo4j = Neo4j(config)
 
@@ -22,15 +22,17 @@ def ask_question():
     )
     return response
 
+
 @accident_api.route("/", methods=["POST"])
 @jwt_auth
 def insert_data():
     data = request.json
-    ans = neo4j.insert_data(data)
+    ans = neo4j.insert_data_accident(data)
     response = Response(
         json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
     )
     return response
+
 
 @accident_api.route("/list", methods=["GET"])
 @jwt_auth
@@ -45,6 +47,7 @@ def get_lists():
     )
     return response
 
+
 @accident_api.route("/", methods=["DELETE"])
 @jwt_auth
 def delete_data():
@@ -54,6 +57,7 @@ def delete_data():
         json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
     )
     return response
+
 
 @accident_api.route("/", methods=["PUT"])
 @jwt_auth
