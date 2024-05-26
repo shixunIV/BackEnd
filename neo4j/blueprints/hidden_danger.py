@@ -56,14 +56,3 @@ def delete_data():
         json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
     )
     return response
-
-
-@hidden_danger_api.route("/", methods=["POST"])
-@jwt_auth
-def insert_data():
-    data = request.json
-    ans = neo4j.insert_data_danger(data)
-    response = Response(
-        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
-    )
-    return response
