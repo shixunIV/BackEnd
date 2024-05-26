@@ -1,5 +1,5 @@
-from py2neo import Graph, Node
-from gpt import GPT, read_config
+from py2neo import Graph, Node, Relationship
+from utils.gpt import GPT, read_config
 import re
 from datetime import datetime
 
@@ -25,7 +25,44 @@ class Neo4j:
             res.append(i)
         return res
 
-    def insert_data(self, data):
+    def insert_data_danger(self, data):
+        node = Node(
+            "hidden_danger",
+            id=data["隐患编号"],
+            troubleshooting_item_point=data["排查项点（风险点）"],
+            troubleshooting_content=data["排查内容（危险源）"],
+            troubleshooting_description=data["隐患描述"],
+            inspection_time=data["排查时间"],
+            place=data["隐患地点"],
+        )
+        self.g.create(node)
+        # 隐患等级如果没有就创建
+        node2 = self.g.nodes.match("hidden_danger_level", name=data["隐患等级"]).first()
+        if not node2:
+            node2 = Node("hidden_danger_level", name=data["隐患等级"])
+            self.g.create(node2)
+        node3 = self.g.nodes.match(
+            "hidden_danger_classification", name=data["隐患分类"]
+        ).first()
+        if not node3:
+            node3 = Node("hidden_danger_classification", name=data["隐患分类"])
+            self.g.create(node3)
+        node4 = self.g.nodes.match(
+            "hidden_danger_source", name=data["隐患来源"]
+        ).first()
+        if not node4:
+            node4 = Node("hidden_danger_source", name=data["隐患来源"])
+            self.g.create(node4)
+        node5 = self.g.nodes.match("hidden_danger_type", name=data["隐患类型"]).first()
+        if not node5:
+            node5 = Node("hidden_danger_type", name=data["隐患类型"])
+            self.g.create(node5)
+        self.g.create(Relationship(node, "hidden_danger_level", node2))
+        self.g.create(Relationship(node, "hidden_danger_classification", node3))
+        self.g.create(Relationship(node, "hidden_danger_source", node4))
+        self.g.create(Relationship(node, "hidden_danger_type", node5))
+
+    def insert_data_accident(self, data):
         result = self.run("MATCH (n:accident) RETURN max(n.index) as max_index")
         max_index = result[0]["max_index"]
         node = Node(
@@ -72,18 +109,6 @@ class Neo4j:
             node = Node("detail_reason", name=data["原因"])
             self.g.create(node)
 
-        # [accident occurrence_time time]
-        # [time accident_happen accident]
-        # [accident occurrence_route route]
-        # [route accident_happen accident]
-        # [accident occurrence_place place]
-        # [place accident_happen accident]
-        # [accident occurrence_train_number train_number]
-        # [train_number accident_happen accident]
-        # [accident occurrence_accident_type accident_type]
-        # [accident_type accident_happen accident]
-        # [accident occurrence_reason_type reason_type]
-        # [reason_type accident_happen accident]
         self.g.run(
             f"MATCH (a:accident), (b:time) WHERE a.index={max_index + 1} AND b.name='{date}' CREATE (a)-[:occurrence_time]->(b),(b)-[:accident_happen]->(a)"
         )
@@ -110,11 +135,19 @@ class Neo4j:
 
         return "插入成功！"
 
-    def ask_neo4j(self, question):
-        sql = self.GPT.generate_sql(question)
+    def ask_neo4j_accident(self, question):
+        sql = self.GPT.generate_sql_accident(question)
         ans = self.run(sql)
         if ans != "出错啦！":
-            return self.GPT.generate_ans(question, ans)
+            return self.GPT.generate_ans_accident(question, ans)
+        else:
+            return "数据库并没有查询到哦"
+
+    def ask_neo4j_danger(self, question):
+        sql = self.GPT.generate_sql_danger(question)
+        ans = self.run(sql)
+        if ans != "出错啦！":
+            return self.GPT.generate_ans_danger(question, ans)
         else:
             return "数据库并没有查询到哦"
 
@@ -122,4 +155,4 @@ class Neo4j:
 if __name__ == "__main__":
     config = read_config("./config.yml")
     neo4j = Neo4j(config)
-    print(neo4j.ask_neo4j("哪些事故的是因为乘客造成的?"))
+    print(neo4j.ask_neo4j_accident("哪些事故的是因为乘客造成的?"))

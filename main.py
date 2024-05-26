@@ -25,7 +25,6 @@ if __name__ == "__main__":
     cmd_list = [
         "pnpm --dir Web serve",
         "cd gateway && go mod tidy && go run main.go",
-        # "start nginx",
         "cd users && go mod tidy && go run main.go",
         "cd neo4j && python main.py",
     ]
