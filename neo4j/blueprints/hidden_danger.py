@@ -3,6 +3,7 @@ import json
 from utils.neo4j import Neo4j
 from utils.config import read_config
 from middleware.jwt import jwt_auth
+from datetime import datetime
 
 # 创建 Blueprint
 hidden_danger_api = Blueprint("hidden_danger", __name__, url_prefix="/api/neo4j/danger")
@@ -30,8 +31,10 @@ def get_lists():
     ans = neo4j.run(
         f"MATCH (n:hidden_danger) RETURN n SKIP {page_size * (page - 1)} LIMIT {page_size}"
     )
+    print(ans)
     response = Response(
-        json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
+        json.dumps({"answer": ans}, ensure_ascii=False),
+        mimetype="application/json",
     )
     return response
 
