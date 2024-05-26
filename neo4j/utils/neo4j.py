@@ -23,6 +23,7 @@ class Neo4j:
         res = []
         for i in ans:
             res.append(i)
+
         return res
 
     def insert_data_danger(self, data):

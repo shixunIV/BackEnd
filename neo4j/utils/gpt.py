@@ -111,7 +111,7 @@ class GPT:
         response = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "user", "content": prompt_accident},
+                {"role": "user", "content": prompt_danger},
                 {
                     "role": "assistant",
                     "content": """

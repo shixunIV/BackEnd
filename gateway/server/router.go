@@ -44,7 +44,8 @@ func InitRouter() *gin.Engine {
 	{
 		neo4j := api.Group("neo4j")
 		{
-			neo4j.Any("/*any", createReverseProxy(routerMapper["neo4j"]))
+			neo4j.Any("/accident/*any", createReverseProxy(routerMapper["neo4j"]))
+			neo4j.Any("/danger/*any", createReverseProxy(routerMapper["neo4j"]))
 			neo4j.Any("", createReverseProxy(routerMapper["neo4j"]))
 		}
 		user := api.Group("user")
