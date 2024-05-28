@@ -33,7 +33,7 @@ def get_lists():
     )
     print(ans)
     response = Response(
-        json.dumps({"answer": ans}, ensure_ascii=False),
+        json.dumps({"answer": ans}, ensure_ascii=False, default=str),
         mimetype="application/json",
     )
     return response
