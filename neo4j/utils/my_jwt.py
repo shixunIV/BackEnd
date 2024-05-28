@@ -12,15 +12,16 @@ class MyJwt:
 
     # 解码token
     def parse_token(self, token_string: str):
-        try:
-            payload = jwt.decode(
-                token_string,
-                algorithms=["HS256"],
-            )
-        except jwt.ExpiredSignatureError:
-            return "Token has expired"
-        except jwt.InvalidTokenError:
-            return "Invalid token"
+        # print('token_string',token_string)
+        # try:
+        #     payload = jwt.decode(
+        #         token_string,
+        #         algorithms=["HS256"],
+        #     )
+        # except jwt.ExpiredSignatureError:
+        #     return "Token has expired"
+        # except jwt.InvalidTokenError:
+        #     return "Invalid token"
         return True
 
 

@@ -10,7 +10,7 @@ import (
 
 var CFG Config
 
-const CONFIG_FILE_PATH = "../config.yml"
+const CONFIG_FILE_PATH = "./config.yml"
 
 type Config struct {
 	JWTSigningString string `yaml:"jwt_signing_string"`
