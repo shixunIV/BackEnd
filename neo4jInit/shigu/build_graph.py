@@ -107,7 +107,7 @@ class MedicalGraph:
                 index=i,
                 death_toll=int(re.search(r"\d+", item["死亡人数"]).group()),
                 injured_toll=int(re.search(r"\d+", item["受伤人数"]).group()),
-                detail_reasion=item["原因"],
+                detail_reason=item["原因"],
             )
             self.g.create(node)
 

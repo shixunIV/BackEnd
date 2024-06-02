@@ -64,8 +64,9 @@ def delete_data():
 def update_data():
     data = request.json
     index = data["index"]
+    print("here")
     ans = neo4j.run(
-        f"MATCH (n:accident) WHERE n.index={index} SET n.death_toll={data['death_toll']},n.injured_toll={data['injured_toll']},n.detail_reason='{data['detail_reason']}'"
+        f"MATCH (n:accident) WHERE n.index={index} SET n.death_toll={data['death_toll']},n.injured_toll={data['injured_toll']},n.detail_reasion='{data['detail_reason']}'"
     )
     response = Response(
         json.dumps({"answer": ans}, ensure_ascii=False), mimetype="application/json"
