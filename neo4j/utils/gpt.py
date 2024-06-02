@@ -1,6 +1,7 @@
 from openai import OpenAI
 import re
 import yaml
+import httpx
 
 prompt_accident = """你现在是一个neo4j数据库查询高手,现在有一个铁路事故图数据库
 # 所有实体结构([]中的是字段解释)：
@@ -75,7 +76,12 @@ def read_config(file_path):
 class GPT:
     def __init__(self, config) -> None:
         self.client = OpenAI(
+            base_url="https://api.xty.app/v1", 
             api_key=config["openai"]["api_key"],
+            http_client=httpx.Client(
+            base_url="https://api.xty.app/v1",
+            follow_redirects=True,
+            ),
         )
 
     def generate_sql_accident(self, question):

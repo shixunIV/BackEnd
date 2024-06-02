@@ -12,7 +12,7 @@ def generate_config():
         file.write("  user: neo4j\n")
         file.write("  password: 12345678\n")
         file.write("openai:\n")
-        file.write("  api_key: 你自己的api\n")
+        file.write("  api_key: sk-a8czoHecLh1RoKlq82FeBa497dD4413dAc6c471dB1A83373\n")
         file.flush()
 
 
