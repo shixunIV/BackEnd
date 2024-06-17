@@ -4,3 +4,4 @@
 **/.DS_Store
 **/config.yml
 **/__pycache__
+**/predict_modify.txt
