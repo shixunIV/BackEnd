@@ -66,6 +66,7 @@ class MedicalGraph:
                 self.g.create(relation)
                 print("创建关系成功")
 
+
 if __name__ == "__main__":
     medical = MedicalGraph()
     medical.build()

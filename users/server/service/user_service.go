@@ -3,7 +3,6 @@ package service
 import (
 	"errors"
 	"log"
-	"users/config"
 	"users/models"
 	"users/utils"
 
@@ -20,7 +19,7 @@ func (s *Login) Handle(c *gin.Context) (any, error) {
 	if err != nil {
 		return nil, errors.New("用户不存在")
 	}
-	if !utils.ComparePasswords(user.Password, s.Password, config.CFG.Salt) {
+	if !utils.ComparePasswords(user.Password, s.Password) {
 		return nil, errors.New("密码错误")
 	}
 	//得到token
@@ -45,7 +44,7 @@ type Register struct {
 }
 
 func (s *Register) Handle(c *gin.Context) (any, error) {
-	password, err := utils.HashPassword(s.Password, config.CFG.Salt)
+	password, err := utils.HashPassword(s.Password)
 	if err != nil {
 		return nil, err
 	}

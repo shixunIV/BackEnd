@@ -6,7 +6,6 @@ import (
 	"io"
 	"log"
 	"os"
-	"users/config"
 	"users/utils"
 )
 
@@ -30,10 +29,7 @@ func CreateUser(id string, name string, age int, gender string, phone string, pa
 	if _, err := GetUserByPhone(phone); err == nil {
 		return errors.New("手机号已存在")
 	}
-	password, err := utils.HashPassword(
-		password,
-		config.CFG.Salt,
-	)
+	password, err := utils.HashPassword(password)
 	if err != nil {
 		return err
 	}
@@ -118,10 +114,10 @@ func ChangePassword(id string, newPassword string, oldPassword string) error {
 	if DB.Where("id = ?", id).First(&user).Error != nil {
 		return errors.New("用户不存在")
 	}
-	if !utils.ComparePasswords(user.Password, oldPassword, config.CFG.Salt) {
+	if !utils.ComparePasswords(user.Password, oldPassword) {
 		return errors.New("密码错误")
 	}
-	password, err := utils.HashPassword(newPassword, config.CFG.Salt)
+	password, err := utils.HashPassword(newPassword)
 	if err != nil {
 		return err
 	}
