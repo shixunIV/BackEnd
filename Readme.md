@@ -1,4 +1,5 @@
 # 北京交通大学最帅的小组
+
 需要克隆，请使用命令`git clone --recurse-submodules https://github.com/shixunIV/BackEnd.git`递归的克隆
 Web端开发请在Web子目录下
 注意git提交规范！提交规范详见下面链接`https://juejin.cn/post/6844903793033756680`
@@ -14,34 +15,39 @@ revert - 回退
 build - 打包
 
 # 项目说明
+
 一个铁路事故知识图谱,可以基于知识图谱进行问答等内容.
 注意项目所有代码需要再BACKEND目录下运行!否则相对路径会有问题
 需求文档：`https://ux1cafcdniz.feishu.cn/docx/GTacdliJLo69P8xrdM8c7OK5nMb`
 
-
 # 系统需求
+
 ## 配置相关
+
 需要安装python与npm/nodejs, 数据库采用sqlite,省去配置步骤,图数据库采用neo4j,用于构建数据库
 在config.yml中配置自己的neo4j数据库等本地信息
 
 ## 运行须知
+
 电脑安装有golang python pnpm nodejs
 首先去web目录底下运行`pnpm i`下载依赖，然后去gateway下运行`go mod tidy`安装依赖
 
 # 目录结构
+
 前端实现在web目录下,不需要实现Android端,使用React进行开发,给我开发的好看一些@hkjgsfgh
 运行`python main.py`直接运行多个目录
 
 ## gateway
+
 **用于转发请求**
 是防火墙，各个组件均需要屏蔽来自非gateway的请求（127.0.0.1）
 使用go撰写，主要的用处是转发，作为多个微服务组件的统一入口。
 
 ## neo4j
+
 **注意使用中间件屏蔽非本地的访问**
 图数据库微服务，主要用处是进行图数据库的查询等操作。
 
-
 ## Users
-用与管理病人
 
+用与管理病人

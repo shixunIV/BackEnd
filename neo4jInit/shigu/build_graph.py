@@ -15,9 +15,9 @@ def read_config(file_path):
 
 class MedicalGraph:
     def __init__(self):
-        self.data_path = "./neo4jInit/data/new_data"
+        self.data_path = "../data/new_data"
         self.data = self.read_nodes()
-        config = read_config("config.yml")
+        config = read_config("../../config.yml")
         self.g = Graph(
             host="127.0.0.1",
             port=config["neo4j"]["port"],
