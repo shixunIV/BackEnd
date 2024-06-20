@@ -2,7 +2,7 @@ import pandas as pd
 from py2neo import Graph, Node, Relationship
 
 # 读取数据
-data = pd.read_excel("./neo4jInit/data/隐患库.xlsx", sheet_name=0)
+data = pd.read_excel("../data/隐患库.xlsx", sheet_name=0)
 # 需要的列有：排查时间 排查部门 隐患编号 隐患等级 排查项点（风险点） 排查内容（危险源） 隐患描述 隐患分类 隐患类型 隐患地点
 data = data[
     [
