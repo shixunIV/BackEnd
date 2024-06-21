@@ -76,11 +76,11 @@ def read_config(file_path):
 class GPT:
     def __init__(self, config) -> None:
         self.client = OpenAI(
-            base_url="https://api.xty.app/v1", 
+            base_url="https://api.xty.app/v1",
             api_key=config["openai"]["api_key"],
             http_client=httpx.Client(
-            base_url="https://api.xty.app/v1",
-            follow_redirects=True,
+                base_url="https://api.xty.app/v1",
+                follow_redirects=True,
             ),
         )
 
@@ -110,7 +110,7 @@ class GPT:
             print(cypher_query)
             return cypher_query
         else:
-            return "出错啦！"
+            return "您好!" + response.choices[0].message.content.strip()
 
     def generate_sql_danger(self, question):
         global prompt_accident
@@ -138,7 +138,7 @@ class GPT:
             print(cypher_query)
             return cypher_query
         else:
-            return "出错啦！"
+            return "您好!" + response.choices[0].message.content.strip()
 
     def generate_ans_accident(self, question, ans):
         response = self.client.chat.completions.create(

@@ -138,19 +138,17 @@ class Neo4j:
 
     def ask_neo4j_accident(self, question):
         sql = self.GPT.generate_sql_accident(question)
+        if sql.startswith("您好!"):
+            return sql
         ans = self.run(sql)
-        if ans != "出错啦！":
-            return self.GPT.generate_ans_accident(question, ans)
-        else:
-            return "数据库并没有查询到哦"
+        return self.GPT.generate_ans_accident(question, ans)
 
     def ask_neo4j_danger(self, question):
         sql = self.GPT.generate_sql_danger(question)
+        if sql.startswith("您好!"):
+            return sql
         ans = self.run(sql)
-        if ans != "出错啦！":
-            return self.GPT.generate_ans_danger(question, ans)
-        else:
-            return "数据库并没有查询到哦"
+        return self.GPT.generate_ans_danger(question, ans)
 
 
 if __name__ == "__main__":
