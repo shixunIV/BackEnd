@@ -12,6 +12,26 @@ config = read_config("../config.yml")
 neo4j = Neo4j(config)
 
 
+@hidden_danger_api.route("/probability", methods=["GET"])
+@jwt_auth
+def probability():
+    page = request.args.get("page", default=1, type=int)
+    page_size = request.args.get("page_size", default=10, type=int)
+    query = f"""
+    MATCH (a:accident)-[r:hidden_danger]->(h:hidden_danger)
+    RETURN a,r,h
+    SKIP {page_size * (page - 1)} LIMIT {page_size}
+    """
+
+    ans = neo4j.run(query)
+    print(ans)
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False, default=str),
+        mimetype="application/json",
+    )
+    return response
+
+
 @hidden_danger_api.route("/", methods=["GET"])
 @jwt_auth
 def ask_question():
