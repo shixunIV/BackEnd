@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from blueprints.accident import accident_api
 from blueprints.hidden_danger import hidden_danger_api
 

@@ -45,7 +45,7 @@ def process_data(i, data):
         elif "环境" in a.generations[0][0].text:
             ans = "环境"
         elif "设备" in a.generations[0][0].text:
-            ans = "设备" 
+            ans = "设备"
         else:
             ans = "未知"
         data[i]["列车组/乘客/环境/设备"] = ans

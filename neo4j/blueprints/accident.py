@@ -12,6 +12,19 @@ config = read_config("../config.yml")
 neo4j = Neo4j(config)
 
 
+@accident_api.route("/sql", methods=["GET"])
+@jwt_auth
+def sqlfind():
+    name = request.args.get("sql", "match (n) return n limit 10")
+    print(name)
+    ans = neo4j.run(name)
+    response = Response(
+        json.dumps({"answer": ans}, ensure_ascii=False, default=str),
+        mimetype="application/json",
+    )
+    return response
+
+
 @accident_api.route("/", methods=["GET"])
 @jwt_auth
 def ask_question():
