@@ -19,10 +19,9 @@ def probability():
     page_size = request.args.get("page_size", default=10, type=int)
     query = f"""
     MATCH (a:accident)-[r:hidden_danger]->(h:hidden_danger)
-    RETURN a,r,h
+    RETURN a.detail_reason,r.probability,h.troubleshooting_description
     SKIP {page_size * (page - 1)} LIMIT {page_size}
     """
-
     ans = neo4j.run(query)
     print(ans)
     response = Response(
